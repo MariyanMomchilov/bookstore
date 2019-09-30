@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'table.css'%}">
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}><strong>{{ message }}</strong></p>
+    {% endfor %}
+{% endif %}
+
+<h1>Order Summary</h1>
+<table>
+    <caption>Order Summary</caption>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Book name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order_item in order.order_items.all %}
+        <tr>
+            <th>{{forloop.counter}}</th>
+            <td>{{order_item.item.title}}</td>
+            <td>{{order_item.item.price}}</td>
+            <td>{{order_item.quantity}}</td>
+            <td>{{order_item.get_item_cost}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <table>
+                <th>Total</th>
+                <td>{{order.get_total}}</td>
+            </table>
+            <span><a href="{% url 'item_list' %}">Continue shopping</a> / 
+            <a href="{% url 'checkout' %}">Proceed checkout</a></span>
+        </tr>
+    </tbody>
+
+</table>
+{% endblock %}

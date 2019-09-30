@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}><strong>{{ message }}</strong></p>
+    {% endfor %}
+{% endif %}
+
+<h1>Payment</h1>
+
+<label for="cardholder-name">Your name:</label>
+<input id="cardholder-name" type="text">
+<!-- placeholder for Elements -->
+<div id="card-element"></div>
+<button id="card-button" data-secret='{{ client_secret }}'>
+  Submit Payment
+</button>
+<p id="result"></p>
+<script src="https://js.stripe.com/v3/"></script>
+
+
+<script>
+    var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+
+    var elements = stripe.elements();
+    var cardElement = elements.create('card', {hidePostalCode : true});
+    cardElement.mount('#card-element');
+
+    var cardholderName = document.getElementById('cardholder-name');
+    var cardButton = document.getElementById('card-button');
+    var clientSecret = cardButton.dataset.secret;
+
+    let par = document.getElementById('result')
+
+    cardButton.addEventListener('click', function(ev) {
+    stripe.handleCardPayment(
+        clientSecret, cardElement, {
+        payment_method_data: {
+            billing_details: {name: cardholderName.value}
+        }
+        }
+    ).then(function(result) {
+        par.innerHTML = `Wait don't close the page!`;
+        if (result.error) {
+        // Display error.message in your UI.
+        console.log(result.error);
+        par.innerHTML = 'ERROR';
+        location.replace('status/failed');
+        } else {
+        // The payment has succeeded. Display a success message.
+        par.innerHTML = 'Success';
+        location.replace('status/success');
+        }
+    });
+    });
+</script>
+
+{% endblock %}

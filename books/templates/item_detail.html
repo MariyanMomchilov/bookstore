@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}><strong>{{ message }}</strong></p>
+    {% endfor %}
+{% endif %}
+
+<h1>My books</h1>
+<h2>{{item.title}}</h2>
+<p><strong>Author</strong>: {{item.authorr}}</p>
+<p><strong>Price</strong>: {{item.price}}$ <a {% if user.is_authenticated %}href="{% url 'add_to_cart' item.pk %}"{% else %}href="{% url 'login' %}"{% endif %}>Add to cart</a> / <a {% if user.is_authenticated %}href="{% url 'remove_from_cart' item.pk %}"{% else %}href="{% url 'login' %}"{% endif %}>Remove from cart</a></p>
+<p><strong>Description</strong>: {{item.description}}</p>
+{% endblock %}

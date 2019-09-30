@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}><strong>{{ message }}</strong></p>
+    {% endfor %}
+{% endif %}
+
+<h1>My books</h1>
+<ul>
+    {% for item in items %}
+    <li> <a href="{% url 'item_detail' item.pk %}">{{item}}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
